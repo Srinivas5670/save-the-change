@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import AdminLogin from "./pages/Login/AdminLogin";
 import CustomerLogin from "./pages/Login/CustomerLogin";
+import CustomerRegister from "./pages/Login/CustomerRegister";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import CustomerDashboard from "./pages/Customer/CustomerDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -25,6 +26,11 @@ function App() {
         <Route
           path="/customer-login"
           element={<CustomerLogin />}
+        />
+
+        <Route
+          path="/customer-register"
+          element={<CustomerRegister />}
         />
 
         <Route
@@ -51,3 +57,4 @@ function App() {
 }
 
 export default App;
+//$env:DB_PASSWORD="YOUR_REAL_MYSQL_PASSWORD"

@@ -7,6 +7,7 @@ function CustomerLogin() {
       usernameLabel="Mobile Number"
       buttonText="Login"
       loginType="customer"
+      showSignup={true}
     />
   );
 }

@@ -17,92 +17,81 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 
-function LoginCard({
-  title,
-  usernameLabel,
-  buttonText,
-  loginType,
-  showSignup = false,
-}) {
+function CustomerRegister() {
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
   const [showPassword, setShowPassword] =
     useState(false);
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
+
   const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     setMessage("");
 
-    // Clear any old login session before starting
-    // a new login attempt.
-    localStorage.removeItem("customerMobile");
-    localStorage.removeItem("adminUsername");
+    const mobile = mobileNumber.trim();
 
-    if (!username.trim() || !password.trim()) {
+    // Mobile number validation
+    if (!mobile) {
+      setMessage("Enter your mobile number.");
+      return;
+    }
+
+    if (!/^\d{10}$/.test(mobile)) {
       setMessage(
-        loginType === "admin"
-          ? "Enter username and password."
-          : "Enter mobile number and password."
+        "Mobile number must contain exactly 10 digits."
       );
       return;
     }
 
+    // Password validation
+    if (!password.trim()) {
+      setMessage("Enter a password.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setMessage(
+        "Password must be at least 6 characters."
+      );
+      return;
+    }
+
+    // Confirm password
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+
     try {
-      const endpoint =
-        loginType === "admin"
-          ? "http://localhost:8080/api/admin/login"
-          : "http://localhost:8080/api/customer/login";
-
-      const requestBody =
-        loginType === "admin"
-          ? {
-              username: username.trim(),
-              password: password,
-            }
-          : {
-              mobileNumber: username.trim(),
-              password: password,
-            };
-
-      const response = await axios.post(
-        endpoint,
-        requestBody
+      await axios.post(
+        "http://localhost:8080/api/customer/register",
+        {
+          mobileNumber: mobile,
+          password: password,
+        }
       );
 
-      setMessage(response.data);
+      setMessage(
+        "Registration successful! Redirecting to login..."
+      );
 
-      if (response.status === 200) {
-        if (loginType === "customer") {
-          localStorage.setItem(
-            "customerMobile",
-            username.trim()
-          );
-        }
-
-        if (loginType === "admin") {
-          localStorage.setItem(
-            "adminUsername",
-            username.trim()
-          );
-        }
-
-        setTimeout(() => {
-          if (loginType === "admin") {
-            navigate("/admin-dashboard");
-          } else {
-            navigate("/customer-dashboard");
-          }
-        }, 500);
-      }
+      setTimeout(() => {
+        navigate("/customer-login");
+      }, 1500);
     } catch (error) {
       if (error.response) {
         const errorMessage =
           error.response.data?.message ||
           error.response.data ||
-          "Login failed.";
+          "Unable to create account.";
 
         setMessage(errorMessage);
       } else {
@@ -137,7 +126,7 @@ function LoginCard({
               fontWeight="bold"
               color="primary"
             >
-              {title}
+              Create Account
             </Typography>
 
             <Typography
@@ -145,17 +134,21 @@ function LoginCard({
               color="text.secondary"
               sx={{ mt: 1, mb: 4 }}
             >
-              Save The Change
+              Join Save The Change
             </Typography>
 
             <TextField
-              label={usernameLabel}
+              label="Mobile Number"
+              type="tel"
               fullWidth
               margin="normal"
-              value={username}
+              value={mobileNumber}
               onChange={(e) =>
-                setUsername(e.target.value)
+                setMobileNumber(e.target.value)
               }
+              inputProps={{
+                maxLength: 10,
+              }}
             />
 
             <TextField
@@ -192,6 +185,42 @@ function LoginCard({
               }}
             />
 
+            <TextField
+              label="Confirm Password"
+              type={
+                showConfirmPassword
+                  ? "text"
+                  : "password"
+              }
+              fullWidth
+              margin="normal"
+              value={confirmPassword}
+              onChange={(e) =>
+                setConfirmPassword(
+                  e.target.value
+                )
+              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() =>
+                        setShowConfirmPassword(
+                          !showConfirmPassword
+                        )
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <VisibilityOff />
+                      ) : (
+                        <Visibility />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
             {message && (
               <Typography
                 align="center"
@@ -209,44 +238,33 @@ function LoginCard({
             )}
 
             <Button
+              variant="contained"
+              fullWidth
+              size="large"
+              sx={{ mt: 3 }}
+              onClick={handleRegister}
+            >
+              Sign Up
+            </Button>
+
+            <Button
               variant="text"
               fullWidth
               sx={{ mt: 2 }}
+              onClick={() =>
+                navigate("/customer-login")
+              }
+            >
+              Already have an account? Login
+            </Button>
+
+            <Button
+              variant="text"
+              fullWidth
               onClick={() => navigate("/")}
             >
               ← Back to Home
             </Button>
-
-            <Button
-              variant="contained"
-              fullWidth
-              size="large"
-              sx={{ mt: 2 }}
-              onClick={handleLogin}
-            >
-              {buttonText}
-            </Button>
-
-            {showSignup && (
-              <Box sx={{ mt: 3, textAlign: "center" }}>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                >
-                  Don't have an account?
-                </Typography>
-
-                <Button
-                  variant="text"
-                  onClick={() =>
-                    navigate("/customer-register")
-                  }
-                  sx={{ mt: 0.5 }}
-                >
-                  Sign Up
-                </Button>
-              </Box>
-            )}
           </CardContent>
         </Card>
       </Box>
@@ -254,4 +272,4 @@ function LoginCard({
   );
 }
 
-export default LoginCard;
+export default CustomerRegister;
