@@ -72,7 +72,7 @@ function CustomerRegister() {
 
     try {
       await axios.post(
-        "http://localhost:8080/api/customer/register",
+        "https://save-the-change-production.up.railway.app/api/customer/register",
         {
           mobileNumber: mobile,
           password: password,

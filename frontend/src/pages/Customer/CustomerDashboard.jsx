@@ -31,7 +31,7 @@ function CustomerDashboard() {
   const fetchCustomer = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/customer/profile/${mobileNumber}`
+        `https://save-the-change-production.up.railway.app/api/customer/profile/${mobileNumber}`
       );
 
       setCustomer(response.data);
@@ -43,7 +43,7 @@ function CustomerDashboard() {
   const fetchTransactions = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/transactions/${mobileNumber}`
+        `https://save-the-change-production.up.railway.app/api/transactions/${mobileNumber}`
       );
 
       setTransactions(response.data);
@@ -86,7 +86,7 @@ function CustomerDashboard() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/customer/use-balance?mobileNumber=${mobileNumber}&amount=${ticketAmount}`
+        `https://save-the-change-production.up.railway.app/api/customer/use-balance?mobileNumber=${mobileNumber}&amount=${ticketAmount}`
       );
 
       setCustomer(response.data);
@@ -152,7 +152,7 @@ function CustomerDashboard() {
     // Check whether receiver exists
     try {
       await axios.get(
-        `http://localhost:8080/api/customer/profile/${receiverMobile}`
+        `https://save-the-change-production.up.railway.app/api/customer/profile/${receiverMobile}`
       );
     } catch (error) {
       setMessage(
@@ -172,7 +172,7 @@ function CustomerDashboard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/customer/transfer",
+        "https://save-the-change-production.up.railway.app/api/customer/transfer",
         {
           senderMobile: mobileNumber,
           receiverMobile: receiverMobile,

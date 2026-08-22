@@ -53,8 +53,8 @@ function LoginCard({
     try {
       const endpoint =
         loginType === "admin"
-          ? "http://localhost:8080/api/admin/login"
-          : "http://localhost:8080/api/customer/login";
+          ? "https://save-the-change-production.up.railway.app/api/admin/login"
+          : "https://save-the-change-production.up.railway.app/api/customer/login";
 
       const requestBody =
         loginType === "admin"

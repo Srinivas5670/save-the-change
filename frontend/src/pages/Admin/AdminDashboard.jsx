@@ -38,13 +38,13 @@ function AdminDashboard() {
 
     try {
       const customerResponse = await axios.get(
-        `http://localhost:8080/api/customer/profile/${mobileNumber}`
+        `https://save-the-change-production.up.railway.app/api/customer/profile/${mobileNumber}`
       );
 
       setCustomer(customerResponse.data);
 
       const transactionResponse = await axios.get(
-        `http://localhost:8080/api/transactions/${mobileNumber}`
+        `https://save-the-change-production.up.railway.app/api/transactions/${mobileNumber}`
       );
 
       setTransactions(transactionResponse.data);
@@ -69,7 +69,7 @@ function AdminDashboard() {
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/transactions/${mobileNumber}`
+        `https://save-the-change-production.up.railway.app/api/transactions/${mobileNumber}`
       );
 
       setTransactions(response.data);
@@ -118,7 +118,7 @@ function AdminDashboard() {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/customer/add-balance?mobileNumber=${mobileNumber}&amount=${amount}`
+        `https://save-the-change-production.up.railway.app/api/customer/add-balance?mobileNumber=${mobileNumber}&amount=${amount}`
       );
 
       setCustomer(response.data);
