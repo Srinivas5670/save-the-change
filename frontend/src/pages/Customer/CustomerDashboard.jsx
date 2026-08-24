@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -21,14 +21,16 @@ function CustomerDashboard() {
   const [transferAmount, setTransferAmount] = useState("");
   const [message, setMessage] = useState("");
 
-  const mobileNumber =
-    localStorage.getItem("customerMobile");
+  const mobileNumber = localStorage.getItem("customerMobile");
 
   if (!mobileNumber) {
     window.location.href = "/customer-login";
   }
 
-  const fetchCustomer = async () => {
+  // ==============================
+  // FETCH CUSTOMER DETAILS
+  // ==============================
+  const fetchCustomer = useCallback(async () => {
     try {
       const response = await axios.get(
         `https://save-the-change-production.up.railway.app/api/customer/profile/${mobileNumber}`
@@ -38,9 +40,12 @@ function CustomerDashboard() {
     } catch (error) {
       setMessage("Unable to load customer details.");
     }
-  };
+  }, [mobileNumber]);
 
-  const fetchTransactions = async () => {
+  // ==============================
+  // FETCH TRANSACTIONS
+  // ==============================
+  const fetchTransactions = useCallback(async () => {
     try {
       const response = await axios.get(
         `https://save-the-change-production.up.railway.app/api/transactions/${mobileNumber}`
@@ -50,12 +55,15 @@ function CustomerDashboard() {
     } catch (error) {
       setMessage("Unable to load transaction history.");
     }
-  };
+  }, [mobileNumber]);
 
+  // ==============================
+  // LOAD CUSTOMER DATA
+  // ==============================
   useEffect(() => {
     fetchCustomer();
     fetchTransactions();
-  }, []);
+  }, [fetchCustomer, fetchTransactions]);
 
   // ==============================
   // BUY METRO TICKET
@@ -91,9 +99,7 @@ function CustomerDashboard() {
 
       setCustomer(response.data);
       setTicketAmount("");
-      setMessage(
-        "Metro ticket purchased successfully!"
-      );
+      setMessage("Metro ticket purchased successfully!");
 
       await fetchTransactions();
     } catch (error) {
@@ -149,7 +155,9 @@ function CustomerDashboard() {
       return;
     }
 
-    // Check whether receiver exists
+    // ==============================
+    // CHECK RECEIVER
+    // ==============================
     try {
       await axios.get(
         `https://save-the-change-production.up.railway.app/api/customer/profile/${receiverMobile}`
@@ -161,7 +169,9 @@ function CustomerDashboard() {
       return;
     }
 
-    // Confirmation before transferring
+    // ==============================
+    // CONFIRM TRANSFER
+    // ==============================
     const confirmed = window.confirm(
       `Send ₹${transferAmount} to ${receiverMobile}?`
     );
@@ -170,6 +180,9 @@ function CustomerDashboard() {
       return;
     }
 
+    // ==============================
+    // PERFORM TRANSFER
+    // ==============================
     try {
       const response = await axios.post(
         "https://save-the-change-production.up.railway.app/api/customer/transfer",
