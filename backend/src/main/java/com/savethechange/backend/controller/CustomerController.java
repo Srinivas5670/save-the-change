@@ -7,7 +7,6 @@ import com.savethechange.backend.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
