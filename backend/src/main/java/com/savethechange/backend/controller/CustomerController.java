@@ -7,6 +7,7 @@ import com.savethechange.backend.service.CustomerService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
@@ -129,4 +130,12 @@ public class CustomerController {
 
         return ResponseEntity.ok(profile);
     }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+public ResponseEntity<String> handleDuplicateMobile(
+        DataIntegrityViolationException ex) {
+
+    return ResponseEntity
+            .status(409)
+            .body("This mobile number is already taken.");
+}
 }
