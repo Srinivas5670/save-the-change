@@ -22,16 +22,23 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Customer> registerCustomer(
-            @RequestBody Customer customer) {
+@PostMapping("/register")
+public ResponseEntity<?> registerCustomer(
+        @RequestBody Customer customer) {
 
+    try {
         Customer savedCustomer =
                 customerService.saveCustomer(customer);
 
         return ResponseEntity.ok(savedCustomer);
-    }
 
+    } catch (org.springframework.dao.DataIntegrityViolationException e) {
+
+        return ResponseEntity
+                .badRequest()
+                .body("This mobile number is already taken.");
+    }
+}
     @PostMapping("/login")
     public ResponseEntity<String> loginCustomer(
             @RequestBody Customer customer) {
@@ -130,12 +137,5 @@ public class CustomerController {
 
         return ResponseEntity.ok(profile);
     }
-    @ExceptionHandler(DataIntegrityViolationException.class)
-public ResponseEntity<String> handleDuplicateMobile(
-        DataIntegrityViolationException ex) {
-
-    return ResponseEntity
-            .status(409)
-            .body("This mobile number is already taken.");
-}
+    
 }
